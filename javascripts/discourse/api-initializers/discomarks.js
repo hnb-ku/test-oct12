@@ -12,7 +12,9 @@ export default apiInitializer("0.8", (api) => {
   const canvas = document.createElement("canvas");
   const img = document.createElement("img");
 
-  img.src = settings.default_site_watermark;
+  const watermarkImg = document.createElement("img");
+
+  watermarkImg.src = settings.default_site_watermark;
 
   console.log(img);
   const ctx = canvas.getContext("2d");
@@ -36,6 +38,8 @@ export default apiInitializer("0.8", (api) => {
               ctx.drawImage(img, 0, 0);
               ctx.font = `${fontSize}px Arial`;
               ctx.fillStyle = "red";
+              ctx.drawImage(watermarkImg, 0, 0);
+
               ctx.fillText(
                 watermarkOpts.text,
                 canvas.width * 0.015,
