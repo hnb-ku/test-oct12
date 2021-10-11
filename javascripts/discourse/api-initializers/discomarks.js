@@ -1,5 +1,4 @@
 import { apiInitializer } from "discourse/lib/api";
-import loadScript from "discourse/lib/load-script";
 
 export default apiInitializer("0.8", (api) => {
   const currentUser = api.getCurrentUser();
@@ -9,19 +8,23 @@ export default apiInitializer("0.8", (api) => {
     text: "zpfei.ink",
   };
 
+  const positionLeft = 5;
+  const positionTop = 5;
+
   const canvas = document.createElement("canvas");
   const ctx = canvas.getContext("2d");
   const img = document.createElement("img");
 
   const downloadedImg = new Image();
   downloadedImg.crossOrigin = "Anonymous";
-
   downloadedImg.src = settings.default_site_watermark;
 
   api.addComposerUploadProcessor(
     { action: "automaticWatermarks" },
     {
       automaticWatermarks: (data, options) => {
+        const t0 = performance.now();
+
         let p = new Promise((resolve, reject) => {
           const file = data.files[data.index];
 
@@ -30,14 +33,29 @@ export default apiInitializer("0.8", (api) => {
           reader.onload = () => {
             img.src = reader.result;
             img.onload = () => {
-              const fontSize = img.width / 20;
-              canvas.width = img.width;
-              canvas.height = img.height;
+              const imageWidth = img.width;
+              const imageHeight = img.height;
+
+              const fontSize = imageWidth / 20;
+
+              const watermarkAspectRatio =
+                downloadedImg.width / downloadedImg.height;
+              const watermarkWidth = img.width / 3;
+              const watermarkHeight = watermarkWidth / watermarkAspectRatio;
+
+              canvas.width = imageWidth;
+              canvas.height = imageHeight;
 
               ctx.drawImage(img, 0, 0);
               ctx.font = `${fontSize}px Arial`;
               ctx.fillStyle = "red";
-              ctx.drawImage(downloadedImg, 0, 0);
+              ctx.drawImage(
+                downloadedImg,
+                positionLeft,
+                positionTop,
+                watermarkWidth,
+                watermarkHeight
+              );
 
               ctx.fillText(
                 watermarkOpts.text,
@@ -50,6 +68,10 @@ export default apiInitializer("0.8", (api) => {
                 });
 
                 data.files[data.index] = watermarked;
+                const t1 = performance.now();
+                console.log(
+                  `Call to doSomething took ${t1 - t0} milliseconds.`
+                );
                 resolve(data);
               });
             };
