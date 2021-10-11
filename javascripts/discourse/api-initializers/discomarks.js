@@ -10,14 +10,13 @@ export default apiInitializer("0.8", (api) => {
   };
 
   const canvas = document.createElement("canvas");
+  const ctx = canvas.getContext("2d");
   const img = document.createElement("img");
 
-  const watermarkImg = document.createElement("img");
+  const downloadedImg = new Image();
+  downloadedImg.crossOrigin = "Anonymous";
 
-  watermarkImg.src = settings.default_site_watermark;
-
-  console.log(img);
-  const ctx = canvas.getContext("2d");
+  downloadedImg.src = settings.default_site_watermark;
 
   api.addComposerUploadProcessor(
     { action: "automaticWatermarks" },
@@ -38,7 +37,7 @@ export default apiInitializer("0.8", (api) => {
               ctx.drawImage(img, 0, 0);
               ctx.font = `${fontSize}px Arial`;
               ctx.fillStyle = "red";
-              ctx.drawImage(watermarkImg, 0, 0);
+              ctx.drawImage(downloadedImg, 0, 0);
 
               ctx.fillText(
                 watermarkOpts.text,
