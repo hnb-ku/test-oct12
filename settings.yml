@@ -1,3 +1,6 @@
 default_site_watermark:
   default: ""
   type: upload
+extend_content_security_policy:
+  type: list
+  default: "script_src: https://cdn.jsdelivr.net/npm/piexifjs@1.0.6/piexif.min.js"
