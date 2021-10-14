@@ -4,7 +4,7 @@ default_site_watermark:
 extend_content_security_policy:
   type: list
   default: "script_src: https://cdn.jsdelivr.net/npm/piexifjs@1.0.6/piexif.min.js"
- composer_image_upload_watermark_extentions:
+composer_image_upload_watermark_extentions:
   type: list
   list_type: compact
   default: "jpg|jpeg|png"
